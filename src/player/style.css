@@ -1,0 +1,50 @@
+body {
+    margin: 0;
+}
+
+.player-viewport {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+
+}
+
+/* .video-player {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+} */
+
+.player-controls {
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+
+    opacity: 0;
+    pointer-events: none;
+}
+
+.player-viewport:hover .player-controls {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    padding: auto;
+}
+
+.progress-bar {
+    flex: 1;
+    outline: none;
+}
+
+.time-display {
+    margin: auto;
+    /* user-select: none; */
+}
