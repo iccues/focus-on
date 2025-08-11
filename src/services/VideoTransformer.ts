@@ -1,27 +1,9 @@
-interface Region {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-}
+import type {FocusOnData, VideoRegion} from "../types/video.ts";
 
-interface FocusOn {
-    version: string;
-    video_resolution: {
-        width: number;
-        height: number;
-    };
-    regions: {
-        start: number;
-        end: number;
-        region: Region;
-    }[];
-}
-
-export class Transformer {
+export class VideoTransformer {
     viewportWidth: number = 0;
     viewportHeight: number = 0;
-    focusOn: FocusOn | null = null;
+    focusOn: FocusOnData | null = null;
 
     constructor(fileName?: string) {
         (async () => {
@@ -32,7 +14,7 @@ export class Transformer {
         })();
     }
 
-    async setFocusOn(fileName: string) {
+    async loadFocusOnData(fileName: string) {
         const file = await fetch(fileName);
         this.focusOn = await file.json();
     }
@@ -42,7 +24,7 @@ export class Transformer {
         this.viewportHeight = height;
     }
 
-    getRegion(time: number) {
+    private getRegion(time: number) {
         if (!this.focusOn) {
             return {
                 x: 0,
@@ -64,14 +46,14 @@ export class Transformer {
         };
     }
 
-    getScale(region: Region) {
+    private calculateScale(region: VideoRegion) {
         const { width, height } = region;
         const scaleX = this.viewportWidth / width;
         const scaleY = this.viewportHeight / height;
         return Math.min(scaleX, scaleY);
     }
 
-    getTranslate(region: Region) {
+    private calculateTranslation(region: VideoRegion) {
         const { x, y, width, height } = region;
         const translateX = -(x + width / 2) + this.viewportWidth / 2;
         const translateY = -(y + height / 2) + this.viewportHeight / 2;
@@ -81,8 +63,8 @@ export class Transformer {
     getTransform(time: number) {
         const region = this.getRegion(time);
 
-        const scale = this.getScale(region);
-        const { translateX, translateY } = this.getTranslate(region);
+        const scale = this.calculateScale(region);
+        const { translateX, translateY } = this.calculateTranslation(region);
 
         return `translate(${translateX}px, ${translateY}px) scale(${scale})`;
     }

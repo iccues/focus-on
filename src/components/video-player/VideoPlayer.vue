@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Transformer } from './transformer';
-import { vResize } from './vResize';
-import { usePlayer } from './usePlayer';
-import PlayerControls from './PlayerControls.vue';
+import { VideoTransformer } from '../../services/VideoTransformer.ts';
+import { vResize } from '../../directives/vResize';
+import { useVideoPlayer } from '../../composables/useVideoPlayer';
+import VideoPlayerControls from './VideoPlayerControls.vue';
 
 const props = defineProps<{
     src?: string;
@@ -16,21 +16,21 @@ defineExpose({
 })
 
 function loadVideo() {
-    videoPlayer.value?.load();
+    videoElement.value?.load();
 }
 
 function loadFocusOn() {
     if (props.focusOn) {
-        transformer.value.setFocusOn(props.focusOn);
+        transformer.value.loadFocusOnData(props.focusOn);
     }
 }
 
 
-const transformer = ref<Transformer>(new Transformer(props.focusOn));
+const transformer = ref<VideoTransformer>(new VideoTransformer(props.focusOn));
 
-const videoPlayer = ref<HTMLVideoElement | null>(null);
+const videoElement = ref<HTMLVideoElement | null>(null);
 
-const playerContext = usePlayer(videoPlayer);
+const playerContext = useVideoPlayer(videoElement);
 
 const {
     currentTime,
@@ -45,25 +45,23 @@ function setViewportSize(width: number, height: number) {
 </script>
 
 <template>
-    <div class="player-viewport" v-resize="setViewportSize">
-        <video class="video-player"
+    <div class="video-player__viewport" v-resize="setViewportSize">
+        <video class="video-player__video"
             :style="{
                 transform: transformer.getTransform(currentTime),
             }"
             @click="togglePlayPause"
-            ref="videoPlayer"
+            ref="videoElement"
         >
             <source :src="props.src" />
             unsupported video format
         </video>
 
-        <player-controls :videoPlayer="playerContext" />
+        <video-player-controls :videoPlayer="playerContext" />
 
     </div>
-    <button @click="videoPlayer?.load()">load</button>
-
 </template>
 
 <style lang="css" scoped>
-@import './style.css';
+@import '../../styles/video-player.css';
 </style>

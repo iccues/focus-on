@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import CoreVideoPlayer from './player/CoreVideoPlayer.vue';
+import VideoPlayer from './components/video-player/VideoPlayer.vue';
 
 const videoFileInput = ref<HTMLInputElement | null>(null);
 const videoSrc = ref<string | undefined>(undefined);
@@ -34,29 +34,29 @@ function handleFocusOnChange(event: Event) {
     }
 }
 
-const coreVideoPlayer = ref<typeof CoreVideoPlayer | null>(null);
-const PlayerVisibility = ref(false);
+const videoPlayerRef = ref<typeof VideoPlayer | null>(null);
+const playerVisibility = ref(false);
 
 function loadPlayer() {
-    PlayerVisibility.value = true;
-    if (coreVideoPlayer.value) {
-        coreVideoPlayer.value.loadVideo();
-        coreVideoPlayer.value.loadFocusOn();
+    playerVisibility.value = true;
+    if (videoPlayerRef.value) {
+        videoPlayerRef.value.loadVideo();
+        videoPlayerRef.value.loadFocusOn();
     }
 }
 
 </script>
 
 <template>
-    <div v-if="!PlayerVisibility">
+    <div v-if="!playerVisibility">
         <input type="file" ref="videoFileInput" accept="video/*" @change="handleVideoChange"/>
-        <input type="file" ref="focusOnFileInput" accept=".json" @change="handleFocusOnChange"/>
+        <input type="file" ref="focusOnFileInput" accept=".fon.json" @change="handleFocusOnChange"/>
         <button @click="loadPlayer">load</button>
     </div>
 
     <div v-else class="app-container">
-        <CoreVideoPlayer
-            ref="coreVideoPlayer"
+        <VideoPlayer
+            ref="videoPlayerRef"
             :src="videoSrc"
             :focus-on="focusOnSrc"
         />

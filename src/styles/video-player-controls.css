@@ -1,22 +1,4 @@
-body {
-    margin: 0;
-}
-
-.player-viewport {
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    position: relative;
-
-}
-
-/* .video-player {
-    object-fit: contain;
-    width: 100%;
-    height: 100%;
-} */
-
-.player-controls {
+.video-player-controls__container {
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
 
@@ -28,23 +10,23 @@ body {
     pointer-events: none;
 }
 
-.player-viewport:hover .player-controls {
+.video-player__viewport:hover .video-player-controls__container {
     opacity: 1;
     pointer-events: auto;
 }
 
-.control-btn {
+.video-player-controls__control-btn {
     background: none;
     border: none;
     padding: auto;
 }
 
-.progress-bar {
+.video-player-controls__progress-bar {
     flex: 1;
     outline: none;
 }
 
-.time-display {
+.video-player-controls__time-display {
     margin: auto;
     /* user-select: none; */
 }
