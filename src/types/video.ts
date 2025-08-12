@@ -6,6 +6,10 @@ export interface PlayerContext {
     duration: Ref<number>;
     togglePlayPause: () => void;
     seek: (time: number) => void;
+    volume: Ref<number>;
+    isMuted: Ref<boolean>;
+    setVolume: (volume: number) => void;
+    toggleMute: () => void;
 }
 
 export interface VideoRegion {

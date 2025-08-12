@@ -6,17 +6,17 @@ export function useVideoPlayer(videoPlayer: Ref<HTMLVideoElement | null>): Playe
     const isPlaying = ref(false);
     const currentTime = ref(0);
     const duration = ref(0);
+    const volume = ref(1);
+    const isMuted = ref(false);
 
     const handleTimeUpdate = () => {
-        if (videoPlayer.value) {
-            currentTime.value = videoPlayer.value.currentTime;
-        }
+        if (!videoPlayer.value) return;
+        currentTime.value = videoPlayer.value.currentTime;
     }
 
     const handleLoadedmetadata = () => {
-        if (videoPlayer.value) {
-            duration.value = videoPlayer.value.duration;
-        }
+        if (!videoPlayer.value) return;
+        duration.value = videoPlayer.value.duration;
     }
 
     const handlePlay = () => {
@@ -25,6 +25,12 @@ export function useVideoPlayer(videoPlayer: Ref<HTMLVideoElement | null>): Playe
 
     const handlePause = () => {
         isPlaying.value = false;
+    }
+
+    const handleVolumeChange = () => {
+        if (!videoPlayer.value) return;
+        volume.value = videoPlayer.value.volume;
+        isMuted.value = videoPlayer.value.muted;
     }
 
 
@@ -38,9 +44,19 @@ export function useVideoPlayer(videoPlayer: Ref<HTMLVideoElement | null>): Playe
     }
 
     function seek(time: number) {
-        if (videoPlayer.value) {
-            videoPlayer.value.currentTime = time;
-        }
+        if (!videoPlayer.value) return;
+        videoPlayer.value.currentTime = time;
+    }
+
+    function setVolume(newVolume: number) {
+        if (!videoPlayer.value) return;
+        const clamped = Math.min(1, Math.max(0, newVolume));
+        videoPlayer.value.volume = clamped;
+    }
+
+    function toggleMute() {
+        if (!videoPlayer.value) return;
+        videoPlayer.value.muted = !videoPlayer.value.muted;
     }
 
     watch(videoPlayer, (newPlayer, oldPlayer) => {
@@ -49,6 +65,7 @@ export function useVideoPlayer(videoPlayer: Ref<HTMLVideoElement | null>): Playe
             oldPlayer.removeEventListener("loadedmetadata", handleLoadedmetadata)
             oldPlayer.removeEventListener("play", handlePlay);
             oldPlayer.removeEventListener("pause", handlePause);
+            oldPlayer.removeEventListener("volumechange", handleVolumeChange);
         }
 
         if (newPlayer) {
@@ -56,6 +73,11 @@ export function useVideoPlayer(videoPlayer: Ref<HTMLVideoElement | null>): Playe
             newPlayer.addEventListener("loadedmetadata", handleLoadedmetadata);
             newPlayer.addEventListener("play", handlePlay);
             newPlayer.addEventListener("pause", handlePause);
+            newPlayer.addEventListener("volumechange", handleVolumeChange);
+
+            // initialize element state from refs
+            newPlayer.volume = volume.value;
+            newPlayer.muted = isMuted.value;
         }
     }, { immediate: true });
 
@@ -65,5 +87,9 @@ export function useVideoPlayer(videoPlayer: Ref<HTMLVideoElement | null>): Playe
         duration,
         togglePlayPause,
         seek,
+        volume,
+        isMuted,
+        setVolume,
+        toggleMute,
     }
 }
