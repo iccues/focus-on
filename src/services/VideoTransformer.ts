@@ -4,6 +4,8 @@ export class VideoTransformer {
     viewportWidth: number = 0;
     viewportHeight: number = 0;
     focusOn: FocusOnData | null = null;
+    videoWidth: number = 0;
+    videoHeight: number = 0;
 
     constructor(fileName?: string) {
         (async () => {
@@ -19,31 +21,35 @@ export class VideoTransformer {
         this.focusOn = await file.json();
     }
 
+    setVideoSize(width: number, height: number) {
+        this.videoWidth = width;
+        this.videoHeight = height;
+    }
+
     setViewportSize(width: number, height: number) {
         this.viewportWidth = width;
         this.viewportHeight = height;
     }
 
+    private getDefaultRegion() {
+        return {
+            x: 0,
+            y: 0,
+            width: this.videoWidth,
+            height: this.videoHeight
+        };
+    }
+
     private getRegion(time: number) {
         if (!this.focusOn) {
-            return {
-                x: 0,
-                y: 0,
-                width: this.viewportWidth,
-                height: this.viewportHeight
-            };
+            return this.getDefaultRegion();
         }
 
         const activeRegion = this.focusOn.regions.find(
             region => time >= region.start && time <= region.end
         );
 
-        return activeRegion?.region ?? {
-            x: 0,
-            y: 0,
-            width: this.focusOn.video_resolution.width,
-            height: this.focusOn.video_resolution.height
-        };
+        return activeRegion?.region ?? this.getDefaultRegion();
     }
 
     private calculateScale(region: VideoRegion) {

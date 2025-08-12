@@ -10,6 +10,9 @@ export interface PlayerContext {
     isMuted: Ref<boolean>;
     setVolume: (volume: number) => void;
     toggleMute: () => void;
+    events: {
+        onLoadedmetadata: (callback: () => void) => void;
+    };
 }
 
 export interface VideoRegion {
@@ -21,10 +24,6 @@ export interface VideoRegion {
 
 export interface FocusOnData {
     version: string;
-    video_resolution: {
-        width: number;
-        height: number;
-    };
     regions: {
         start: number;
         end: number;

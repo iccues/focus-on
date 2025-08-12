@@ -8,6 +8,8 @@ export function useVideoPlayer(videoPlayer: Ref<HTMLVideoElement | null>): Playe
     const duration = ref(0);
     const volume = ref(1);
     const isMuted = ref(false);
+    
+    const loadedmetadataCallbacks: (() => void)[] = [];
 
     const handleTimeUpdate = () => {
         if (!videoPlayer.value) return;
@@ -17,6 +19,7 @@ export function useVideoPlayer(videoPlayer: Ref<HTMLVideoElement | null>): Playe
     const handleLoadedmetadata = () => {
         if (!videoPlayer.value) return;
         duration.value = videoPlayer.value.duration;
+        loadedmetadataCallbacks.forEach(callback => callback());
     }
 
     const handlePlay = () => {
@@ -91,5 +94,10 @@ export function useVideoPlayer(videoPlayer: Ref<HTMLVideoElement | null>): Playe
         isMuted,
         setVolume,
         toggleMute,
+        events: {
+            onLoadedmetadata: (callback: () => void) => {
+                loadedmetadataCallbacks.push(callback);
+            }
+        }
     }
 }
