@@ -9,15 +9,21 @@ const props = defineProps<{
 }>();
 
 const {
-    isPlaying,
-    currentTime,
-    duration,
-    togglePlayPause,
-    seek,
-    volume,
-    isMuted,
-    setVolume,
-    toggleMute,
+    playback: {
+        isPlaying,
+        togglePlayPause,
+    },
+    time: {
+        currentTime,
+        duration,
+        seek,
+    },
+    volume: {
+        volume,
+        isMuted,
+        setVolume,
+        toggleMute,
+    },
 } = props.videoPlayer;
 
 function handleProgressChange(event: Event) {

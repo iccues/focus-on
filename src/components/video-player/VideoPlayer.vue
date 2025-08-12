@@ -38,8 +38,12 @@ playerContext.events.onLoadedmetadata(() => {
 });
 
 const {
-    currentTime,
-    togglePlayPause,
+    time: {
+        currentTime,
+    },
+    playback: {
+        togglePlayPause,
+    }
 } = playerContext;
 
 
