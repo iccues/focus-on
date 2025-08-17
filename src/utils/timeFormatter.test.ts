@@ -1,4 +1,3 @@
-import { describe, test, expect } from 'vitest';
 import { formatTime } from './timeFormatter';
 
 describe('formatTime', () => {
