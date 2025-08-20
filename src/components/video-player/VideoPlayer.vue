@@ -26,14 +26,13 @@ function loadFocusOn() {
 }
 
 
-const transformer = ref<VideoTransformer>(new VideoTransformer(props.focusOn));
+const transformer = ref<VideoTransformer>(new VideoTransformer());
 
 const videoElement = ref<HTMLVideoElement | null>(null);
 
 const playerContext = useVideoPlayer(videoElement);
 
 playerContext.events.onLoadedmetadata(() => {
-    console.log('Video metadata loaded');
     transformer.value.setVideoSize(videoElement.value?.videoWidth ?? 0, videoElement.value?.videoHeight ?? 0);
 });
 

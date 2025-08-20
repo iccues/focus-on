@@ -1,38 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import VideoPlayer from './components/video-player/VideoPlayer.vue';
+import FileInput from './components/FileInput.vue';
 
-const videoFileInput = ref<HTMLInputElement | null>(null);
 const videoSrc = ref<string | undefined>(undefined);
 
-const focusOnFileInput = ref<HTMLInputElement | null>(null);
 const focusOnSrc = ref<string | undefined>(undefined);
-
-function handleVideoChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) {
-        const selectedFile = target.files[0];
-
-        if (videoSrc.value) {
-            URL.revokeObjectURL(videoSrc.value);
-        }
-
-        videoSrc.value = URL.createObjectURL(selectedFile);
-    }
-}
-
-function handleFocusOnChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) {
-        const selectedFile = target.files[0];
-
-        if (focusOnSrc.value) {
-            URL.revokeObjectURL(focusOnSrc.value);
-        }
-
-        focusOnSrc.value = URL.createObjectURL(selectedFile);
-    }
-}
 
 const videoPlayerRef = ref<typeof VideoPlayer | null>(null);
 const playerVisibility = ref(false);
@@ -48,18 +21,29 @@ function loadPlayer() {
 </script>
 
 <template>
-    <div v-if="!playerVisibility">
-        <input type="file" ref="videoFileInput" accept="video/*" @change="handleVideoChange"/>
-        <input type="file" ref="focusOnFileInput" accept=".fon.json" @change="handleFocusOnChange"/>
+    <div v-show="!playerVisibility">
+        <FileInput
+            accept="video/*"
+            v-model:file-src="videoSrc"
+        >Select Video</FileInput>
+        <FileInput
+            accept=".fon.json"
+            v-model:file-src="focusOnSrc"
+        >Select Focus On File</FileInput>
         <button @click="loadPlayer">load</button>
     </div>
 
-    <div v-else class="app-container">
+    <div v-show="playerVisibility" class="app-container">
         <VideoPlayer
             ref="videoPlayerRef"
             :src="videoSrc"
             :focus-on="focusOnSrc"
         />
+        <div class="close-btn-container">
+            <button class="close-btn" @click="playerVisibility = false">
+                <img src="./assets/icons/return.svg" alt="Close Video Player" />
+            </button>
+        </div>
     </div>
 </template>
 
@@ -71,5 +55,35 @@ function loadPlayer() {
     height: 100vh;
     width: 100vw;
     background-color: black;
+}
+
+.app-container:hover .close-btn-container {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.close-btn-container {
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 40px;
+    width: 40px;
+
+    opacity: 0;
+    pointer-events: none;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    padding: auto;
+
+    height: 100%;
+    width: 100%;
+
+    color: white;
 }
 </style>
