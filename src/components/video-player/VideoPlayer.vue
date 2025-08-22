@@ -4,6 +4,7 @@ import { VideoTransformer } from '../../services/VideoTransformer.ts';
 import { vResize } from '../../directives/vResize';
 import { useVideoPlayer } from '../../composables/useVideoPlayer';
 import VideoPlayerControls from './VideoPlayerControls.vue';
+import { useViewportFullscreen } from '../../composables/useViewportFullscreen.ts';
 
 const props = defineProps<{
     src?: string;
@@ -28,8 +29,10 @@ function loadFocusOn() {
 
 const transformer = ref<VideoTransformer>(new VideoTransformer());
 
-const videoElement = ref<HTMLVideoElement | null>(null);
+const viewportElement = ref<HTMLDivElement | null>(null);
+const viewportContext = useViewportFullscreen(viewportElement);
 
+const videoElement = ref<HTMLVideoElement | null>(null);
 const playerContext = useVideoPlayer(videoElement);
 
 playerContext.events.onLoadedmetadata(() => {
@@ -53,7 +56,7 @@ function setViewportSize(width: number, height: number) {
 </script>
 
 <template>
-    <div class="video-player__viewport" v-resize="setViewportSize">
+    <div class="video-player__viewport" v-resize="setViewportSize" ref="viewportElement">
         <video class="video-player__video"
             :style="{
                 transform: transformer.getTransform(currentTime),
@@ -65,8 +68,7 @@ function setViewportSize(width: number, height: number) {
             unsupported video format
         </video>
 
-        <video-player-controls :videoPlayer="playerContext" />
-
+        <video-player-controls :playerContext="playerContext" :viewportContext="viewportContext" />
     </div>
 </template>
 

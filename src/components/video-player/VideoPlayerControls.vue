@@ -1,11 +1,12 @@
 <script setup lang="ts">
 
-import type {PlayerContext} from "../../types/video.ts";
+import type {PlayerContext, ViewportContext} from "../../types/video.ts";
 import {formatTime} from "../../utils/timeFormatter.ts";
 
 
 const props = defineProps<{
-    videoPlayer: PlayerContext;
+    playerContext: PlayerContext;
+    viewportContext: ViewportContext;
 }>();
 
 const {
@@ -24,7 +25,12 @@ const {
         setVolume,
         toggleMute,
     },
-} = props.videoPlayer;
+} = props.playerContext;
+
+const {
+    isFullscreen,
+    toggleFullscreen,
+} = props.viewportContext;
 
 function handleProgressChange(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -67,7 +73,12 @@ function handleVolumeChange(event: Event) {
                 @input="handleVolumeChange"
             />
         </div>
-        <button class="video-player-controls__control-btn video-player-controls__fullscreen-btn">⛶</button>
+        <button class="video-player-controls__control-btn video-player-controls__fullscreen-btn"
+            @click="toggleFullscreen"
+        >
+            <img v-if="!isFullscreen" src="../../assets/icons/entryFullScreen.svg" alt="Enter Fullscreen" />
+            <img v-else src="../../assets/icons/exitFullScreen.svg" alt="Exit Fullscreen" />
+        </button>
     </div>
 </template>
 

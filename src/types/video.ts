@@ -21,6 +21,11 @@ export interface PlayerContext {
     };
 }
 
+export interface ViewportContext {
+    isFullscreen: Ref<boolean>;
+    toggleFullscreen: () => void;
+}
+
 export interface VideoRegion {
     x: number;
     y: number;
