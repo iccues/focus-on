@@ -21,7 +21,7 @@ function loadPlayer() {
 </script>
 
 <template>
-    <div v-show="!playerVisibility">
+    <div v-show="!playerVisibility" class="file-inputs">
         <FileInput
             accept="video/*"
             v-model:file-src="videoSrc"
@@ -33,57 +33,25 @@ function loadPlayer() {
         <button @click="loadPlayer">load</button>
     </div>
 
-    <div v-show="playerVisibility" class="app-container">
+    <div v-show="playerVisibility" class="player-container">
         <VideoPlayer
             ref="videoPlayerRef"
             :src="videoSrc"
             :focus-on="focusOnSrc"
         />
-        <div class="close-btn-container">
-            <button class="close-btn" @click="playerVisibility = false">
-                <img src="./assets/icons/return.svg" alt="Close Video Player" />
+    </div>
+
+    <div class="close-btn-container">
+        <div class="close-btn-background">
+            <button class="close-btn" @click="playerVisibility = !playerVisibility">
+                <img v-if="playerVisibility" src="./assets/icons/return.svg" alt="Close Video Player" />
+                <img v-else src="./assets/icons/forward.svg" alt="Forward Video Player" />
             </button>
         </div>
     </div>
+
 </template>
 
 <style scoped>
-.app-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 100vw;
-    background-color: black;
-}
-
-.app-container:hover .close-btn-container {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.close-btn-container {
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 40px;
-    width: 40px;
-
-    opacity: 0;
-    pointer-events: none;
-}
-
-.close-btn {
-    background: none;
-    border: none;
-    padding: auto;
-
-    height: 100%;
-    width: 100%;
-
-    color: white;
-}
+@import './styles/app.css';
 </style>
